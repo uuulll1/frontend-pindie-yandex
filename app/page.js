@@ -1,43 +1,27 @@
-"use client";
-import { Banner } from "./components/Banner/Banner";
-import { Promo } from "./components/Promo/Promo";
-import { CardsList } from "./components/CardsList/CardsList";
-import chalk from "chalk";
-import { getNormalizedGamesDataByCategory } from "./api/api-utils";
+'use client';
+
 import { endpoints } from "./api/config";
-import { CardsListSection } from "./components/CardsList/CardsListSection";
+import { Banner } from "./components/Banner/Banner";
+import { CardsListSection } from "./components/CardsListSection/CardsListSection";
+import { Promo } from "./components/Promo/Promo";
 import { useGetDataByCategory } from "./api/api-hooks";
-import { Preloader } from "./components/Preloader/Preloader";
+import { Preloader } from "@/app/components/Preloader/Preloader";
 
-const Home = () => {
-    const popularGames = useGetDataByCategory(endpoints.games, "popular");
-    const newGames = useGetDataByCategory(endpoints.games, "new");
-    // console.log(popularGames);
-
-    console.log(chalk.bgCyan("внесли баги, Босс, ждем оценки"));
-
-    return (
-        <div>
-            <main className="main">
-                <Banner />
-                {popularGames ? (
-                    <CardsListSection
-                        id="popular"
-                        title="Популярные"
-                        data={popularGames}
-                    />
-                ) : (
-                    <Preloader />
-                )}
-                {newGames ? (
-                    <CardsListSection id="new" title="Новые" data={newGames} />
-                ) : (
-                    <Preloader />
-                )}
-                <Promo />
-            </main>
-        </div>
-    );
-};
-
-export default Home;
+export default function Home() {
+  const popularGames = useGetDataByCategory(endpoints.games, "popular");
+  const newGames = useGetDataByCategory(endpoints.games, "new");
+  return (
+    <main className="main">
+      <Banner />
+      {
+        (popularGames && newGames) ? (
+          <>
+            <CardsListSection id="popular" title="Популярные" data={popularGames} type="slider"/>
+            <CardsListSection id="new" title="Новинки"  data={newGames} type="slider"/>
+          </>
+        ) : <Preloader />
+      }
+      <Promo />
+    </main>
+  );
+}
